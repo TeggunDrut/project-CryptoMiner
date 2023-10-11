@@ -5,87 +5,15 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Crypto Miner</title>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
-        <style>
-            @font-face {
-                font-family: BO;
-                src: url(BO.ttf);
-            }
-
-            div {
-                font-family: BO;
-            }
-
-            :root {
-                --space-cadet: #2b2d42ff;
-                --cool-gray: #8d99aeff;
-                --antiflash-white: #edf2f4ff;
-                --red-pantone: #ef233cff;
-                --fire-engine-red: #d90429ff;
-            }
-
-            html,
-            body {
-                margin: 0;
-                padding: 0;
-                height: 100vh;
-            }
-            body {
-                background-color: var(--antiflash-white);
-                color: var(--space-cadet);
-                font-family: BO;
-            }
-            .container {
-                width: 100%;
-                height: 100%;
-
-                display: grid;
-                grid-template-columns: 60% 40%;
-            }
-            .leaderboard {
-                position: absolute;
-                top: 0;
-                right: 0;
-
-                width: 35%;
-                height: 100%;
-                background-color: var(--cool-gray);
-
-                display: grid;
-                grid-template-rows: 30% 70%;
-
-                text-align: center;
-            }
-            .title {
-                width: 100%;
-                height: 100%;
-                font-size: 3rem;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-
-                background-color: var(--space-cadet);
-                color: var(--antiflash-white);
-            }
-            .content {
-                width: 100%;
-                height: 100%;
-                overflow-y: scroll;
-
-                display: grid;
-                grid-template-rows: 70% 30%;
-            }
-            #leaderboard {
-                border-spacing: 28px;
-
-                font-size: 1.5rem;
-                color: var(--space-cadet);
-            }
-        </style>
+        <link rel="stylesheet" href="style.css">
     </head>
     <body>
         <div class="container">
             <canvas id="canvas"></canvas>
-            <div class="leaderboard">
+            <div class="cash" id="cash"></div>
+            <button id="buy1">Buy 1</button>
+            <button id="sell1">Sell 1</button>
+            <!-- <div class="leaderboard">
                 <div class="title">LEADERBOARD</div>
                 <div class="content">
                     <table id="leaderboard">
@@ -96,7 +24,7 @@
                         </tr>
                     </table>
                 </div>
-            </div>
+            </div> -->
         </div>
 
         <script src="BlockChain.js"></script>

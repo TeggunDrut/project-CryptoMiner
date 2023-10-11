@@ -11,7 +11,20 @@ var columns = width / boxSize - 2;
 let originalMaxHeight = 400;
 let maxHeight = 400;
 
+var blockchain = new Blockchain();
+let num = 25;
+
+let min = 4500;
+
+let currentCost = 0;
+
 var values = [];
+
+let cashP = document.getElementById("cash");
+let cash = 5_000;
+
+let pCount = 0;
+let pAt = -1;
 
 let savedPlayers = [
     {
@@ -33,7 +46,7 @@ let savedPlayers = [
     {
         name: "Player 5",
         cash: 500,
-    }
+    },
 ];
 
 let leaderboardTable = document.getElementById("leaderboard");
@@ -48,12 +61,13 @@ function addToLeaderboard(leaderboard, rank, name, cash) {
     cashCell.textContent = cash;
 }
 
-savedPlayers.sort((a, b) => b.cash - a.cash);
+// adds all saved players to leaderboard, would b epulled from database
 
-for(const player of savedPlayers) {
-    addToLeaderboard(leaderboardTable, savedPlayers.indexOf(player) + 1, player.name, player.cash);
-}
+// savedPlayers.sort((a, b) => b.cash - a.cash);
 
+// for(const player of savedPlayers) {
+//     addToLeaderboard(leaderboardTable, savedPlayers.indexOf(player) + 1, player.name, player.cash);
+// }
 
 function updateValues(newValue) {
     if (values.length >= columns) {
@@ -99,6 +113,13 @@ function drawValues() {
             ctx.stroke();
         }
     }
+
+    ctx.strokeStyle = "red";
+    ctx.beginPath();
+    console.log();
+    ctx.moveTo(0, pAt/maxHeight);
+    ctx.lineTo(width, pAt/maxHeight);
+    ctx.stroke();
 }
 
 function drawLabels(min, max, numLabels) {
@@ -111,35 +132,43 @@ function drawLabels(min, max, numLabels) {
     for (var i = 0; i <= numLabels; i++) {
         var y = canvas.height - (i + 0.5) * (canvas.height / numLabels); // Adjust the y coordinate
         var value = min + i * step;
+        if (value === NaN || value === -Infinity) value = 0;
         ctx.fillText(value.toFixed(2), canvas.width - labelOffset, y);
     }
 }
 
-var blockchain = new Blockchain();
-let num = 2;
-
 function update() {
-    let maxHeight = Math.max(...values);
+    maxHeight = Math.max(...values);
 
-    var newValue = 0;
+    var newValue = min;
     if (blockchain.chain.length > 1) {
         newValue = blockchain.chain[blockchain.chain.length - 1].data;
     } else {
-        newValue = 0;
-    }
-    newValue += Math.random() * num - num / 2; //
-
-    if (newValue < 0) {
-        newValue = 0;
+        newValue = min;
     }
 
-    // Generate a new random value between 0 and canvas.height
+    if (Math.random() > 0.6) {
+        // if(Math.random() > .8) newValue += Math.random() * num*2 - num;
+        // else
+        newValue += Math.abs(Math.random() * (100 - num) - num);
+    } else {
+        newValue += -Math.abs(Math.random() * (100 - num) - num);
+    }
+
+    if (newValue < min) {
+        newValue = min;
+    }
+
+    currentCost = newValue;
+    console.log(currentCost);
+    // Generate a new random value between min and canvas.height
 
     blockchain.addBlock(new Block(Date.now(), newValue));
     updateValues(newValue);
     drawValues();
-    drawLabels(0, maxHeight, rows * 2); // Adjust min and max as needed
+    drawLabels(min, maxHeight, rows * 2); // Adjust min and max as needed
 
+    cashP.innerText = "Cash: " + cash.toFixed(2);
 }
 update();
 setInterval(update, 1000);
@@ -148,3 +177,18 @@ window.addEventListener("resize", function () {
     width = canvas.width = window.innerWidth * 0.7;
     columns = width / boxSize - 2;
 });
+
+document.getElementById("buy1").onclick = () => {
+    if (cash > currentCost) {
+        cash -= currentCost;
+        pCount++;
+        pAt = currentCost;
+    }
+};
+document.getElementById("sell1").onclick = () => {
+    if (pCount > 0) {
+        cash += currentCost;
+        pCount--;
+        pAt = -1;
+    }
+};
